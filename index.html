@@ -1,75 +1,69 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8">
   <title>Cancionero</title>
-  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; }
+    ul { padding-left: 20px; }
+    li { margin: 6px 0; }
+    .error { color: red; }
+    footer { margin-top: 24px; color: #666; font-size: 0.9em; }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>Cancionero</h1>
-    <div id="controls">
-      <label for="keySelector">Key:</label>
-      <select id="keySelector"><option value="">Tonalidad</option></select>
+  <h1>Cancionero</h1>
+  <div id="messages" role="status" aria-live="polite"></div>
+  <ul id="songList"></ul>
+  <footer>Generado localmente · Netlify compatible</footer>
 
-      <label for="capoSelector">Capo:</label>
-      <select id="capoSelector"><option value="0">Capo 0</option></select>
-
-      <button id="decTrans">-</button>
-      <button id="incTrans">+</button>
-
-      <label for="fontSizeRange">Tamaño:</label>
-      <input id="fontSizeRange" type="range" min="8" max="20" value="11" />
-
-      <label for="columnsToggle">Columnas</label>
-      <select id="columnsToggle"><option value="1">1</option><option value="2">2</option></select>
-
-      <button id="printBtn">Imprimir / Exportar PDF</button>
-    </div>
-  </header>
-
-  <main>
-    <section id="songList" class="page">
-      <h2>Lista de canciones</h2>
-      <ul id="list"></ul>
-    </section>
-
-    <section id="songView" class="page" hidden>
-      <div id="meta">
-        <h2 id="songTitle"></h2>
-        <div id="subtitle"></div>
-      </div>
-
-      <div id="songArea" class="columns-1">
-        <!-- aquí se inyecta la representación con acordes encima -->
-        <div id="content" class="song-content" data-key=""></div>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <small>Generado localmente · Netlify compatible</small>
-  </footer>
-   
   <script>
-fetch("./index.json")
-  .then(r => r.json())
-  .then(data => {
-    const ul = document.getElementById("songList");
-    data.forEach(song => {
-      const li = document.createElement("li");
-      li.innerHTML = <a href="canciones/${song.slug}.html">${song.title}</a>;
-      ul.appendChild(li);
-    });
-  })
-  .catch(err => {
-    console.error("Error cargando la lista de canciones:", err);
-    const ul = document.getElementById("songList");
-    ul.innerHTML = "<li>No se pudo cargar la lista. Revisa index.json y rutas.</li>";
-  });
- </script>
+  (async function() {
+    const msg = id => { const el = document.getElementById('messages'); if(el) el.innerText = id; };
+    const ul = document.getElementById('songList');
+    if(!ul){ console.error('No existe #songList'); return; }
 
-
+    try {
+      msg('Cargando lista...');
+      const resp = await fetch('./index.json', {cache:'no-store'});
+      if(!resp.ok){
+        ul.innerHTML = '<li class="error">No se encontró index.json (status ' + resp.status + ')</li>';
+        console.error('fetch index.json status', resp.status);
+        return;
+      }
+      const data = await resp.json();
+      if(!Array.isArray(data)){
+        ul.innerHTML = '<li class="error">index.json debe ser un array</li>';
+        console.error('index.json no es array', data);
+        return;
+      }
+      if(data.length === 0){
+        ul.innerHTML = '<li>No hay canciones en index.json</li>';
+        msg('');
+        return;
+      }
+      ul.innerHTML = '';
+      data.forEach(item => {
+        const li = document.createElement('li');
+        const slug = (item.slug || '').trim();
+        const title = item.title || 'Sin título';
+        if(!slug){
+          li.textContent = title + ' (slug faltante)';
+        } else {
+          const a = document.createElement('a');
+          a.href = 'canciones/' + encodeURIComponent(slug) + '.html';
+          a.textContent = title;
+          li.appendChild(a);
+        }
+        ul.appendChild(li);
+      });
+      msg('');
+    } catch(err){
+      ul.innerHTML = '<li class="error">Error cargando lista. Mira la consola</li>';
+      console.error('Error general cargando index.json', err);
+      msg('');
+    }
+  })();
+  </script>
 </body>
 </html>
