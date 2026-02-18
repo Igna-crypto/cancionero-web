@@ -1,0 +1,55 @@
+[11:54, 18/2/2026] Ignacio: <!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cancionero</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Cancionero</h1>
+    <div id="controls">
+      <label for="keySelector">Key:</label>
+      <select id="keySelector"><option value="">Tonalidad</option></select>
+
+      <label for="capoSelector">Capo:</label>
+      <select id="capoSelector"><option value="0">Capo 0</option></select>
+
+      <button id="decTrans">-</button>
+      <button id="incTrans">+</button>
+
+      <label for="fontSizeRange">Tamaño:</label>
+      <input id="fontSizeRange" type="range" min="8" max="20" value="11" />
+
+      <label for="columnsToggle">…
+[11:55, 18/2/2026] Ignacio: Style
+[11:55, 18/2/2026] Ignacio: :root{
+  --font-mono: "Courier New", Courier, monospace;
+  --chord-color: #0b61a4;
+  --background: #fff;
+  --text: #111;
+}
+
+html,body{height:100%;margin:0;background:var(--background);color:var(--text);font-family:var(--font-mono);}
+header{padding:12px;background:#f2f2f2;border-bottom:1px solid #ddd;display:flex;flex-direction:column;gap:8px}
+#controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+#controls select, #controls input, #controls button{font-family:inherit;padding:6px;border-radius:4px;border:1px solid #ccc}
+main{padding:16px}
+.page{max-width:1100px;margin:0 auto}
+#list li{margin:6px 0}
+.song-content{white-space:pre-wrap;font-family:var(--font-mono);font-size:11pt}
+.line{display:block; margin-bottom:4px;}
+.chord-line{color:var(--chord-color); font-weight:700; display:block; white-space:pre; font-family:var(--font-mono); line-height:1;}
+.lyric-line{display:block; white-space:pre; font-family:var(--font-mono); line-height:1.1;}
+.columns-2 .song-block{display:inline-block;vertical-align:top;width:48%;margin-right:2%;box-sizing:border-box}
+.song-block{margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #eee}
+
+/* print styles */
+@media print {
+  header, footer, #controls { display:none !important }
+  body{background:#fff}
+  .columns-2 .song-block{width:48%}
+  /* A4 layout tweaks: */
+  @page { size: A4; margin: 20mm; }
+}

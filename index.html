@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cancionero</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Cancionero</h1>
+    <div id="controls">
+      <label for="keySelector">Key:</label>
+      <select id="keySelector"><option value="">Tonalidad</option></select>
+
+      <label for="capoSelector">Capo:</label>
+      <select id="capoSelector"><option value="0">Capo 0</option></select>
+
+      <button id="decTrans">-</button>
+      <button id="incTrans">+</button>
+
+      <label for="fontSizeRange">Tamaño:</label>
+      <input id="fontSizeRange" type="range" min="8" max="20" value="11" />
+
+      <label for="columnsToggle">Columnas</label>
+      <select id="columnsToggle"><option value="1">1</option><option value="2">2</option></select>
+
+      <button id="printBtn">Imprimir / Exportar PDF</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="songList" class="page">
+      <h2>Lista de canciones</h2>
+      <ul id="list"></ul>
+    </section>
+
+    <section id="songView" class="page" hidden>
+      <div id="meta">
+        <h2 id="songTitle"></h2>
+        <div id="subtitle"></div>
+      </div>
+
+      <div id="songArea" class="columns-1">
+        <!-- aquí se inyecta la representación con acordes encima -->
+        <div id="content" class="song-content" data-key=""></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <small>Generado localmente · Netlify compatible</small>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
